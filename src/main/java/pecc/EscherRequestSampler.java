@@ -67,15 +67,19 @@ public class EscherRequestSampler extends AbstractJavaSamplerClient {
                             String.class);
 
             sampleResult.setResponseCode(Integer.toString(response.getStatusCodeValue()));
-            sampleResult.setResponseMessage(response.getBody());
-            sampleResult.setResponseData(response.getBody(), "UTF-8");
+            String responseBody = response.getBody();
+            if (responseBody != null) {
+                sampleResult.setResponseMessage(responseBody);
+                sampleResult.setResponseData(responseBody, "UTF-8");
+            }
             sampleResult.setSuccessful(true);
 
         } catch (HttpStatusCodeException ex) {
             sampleResult.setSuccessful(false);
             sampleResult.setResponseCode(Integer.toString(ex.getRawStatusCode()));
-            sampleResult.setResponseMessage(ex.getResponseBodyAsString());
-            sampleResult.setResponseData(ex.getResponseBodyAsString(), "UTF-8");
+            String responseBody = ex.getResponseBodyAsString();
+            sampleResult.setResponseMessage(responseBody);
+            sampleResult.setResponseData(responseBody, "UTF-8");
         } catch (Exception e) {
             log.error("Error running EscherRequestSampler", e);
             sampleResult.setSuccessful(false);
